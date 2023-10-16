@@ -1,5 +1,8 @@
+/* eslint-disable no-unreachable */
 const express = require('express');
 const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
+const secretKey = 'secretkey';
 const app = express();
 const port = 3000;
 app.use(bodyParser.json());
@@ -24,11 +27,17 @@ app.post('/login', (req, res) => {
 
   if (finduser.length > 0) {
     console.log('Found Objects:', finduser);
-    return res.status(201).json({ message: 'User logged in successfully' });
+    jwt.sign({ users }, secretKey, { expiresIn: '500s' }, (err, token) => {
+      res.json({
+        token
+      })
+    })
   } else {
     console.log('No matching objects found');
     return res.status(201).json({ message: 'User is not found please register first' });
   }
+
+
 
 })
 app.listen(port, () => {
