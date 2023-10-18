@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const port = 3000;
 
-const userController = require('./contreoller');
+const userController = require('../controllers/controller');
 
 const jsonParser = bodyParser.json();
 

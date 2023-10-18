@@ -1,8 +1,9 @@
+/* eslint-disable no-undef */
 /* eslint-disable prefer-destructuring */
-const userModel = require('./model');
+const userModel = require('../models/model');
 const jwt = require('jsonwebtoken');
 
-function signup(req, res) {
+async function signup(req, res) {
     const { first_name, last_name, user_name, password, bio, phone_number, address, dob, gender, category_id, status, created_at, modified_at } = req.body;
     const newUser = {
         first_name,
@@ -20,13 +21,20 @@ function signup(req, res) {
         modified_at,
     };
 
-    userModel.createUser(newUser, (error, results) => {
-        if (error) {
-            res.status(500).send({ error: 'User registration failed' });
-        } else {
-            res.status(201).json({ message: 'User registered successfully' });
-        }
-    });
+    // userModel.createUser(newUser, (error, results) => {
+    //     if (error) {
+    //         res.status(500).send({ error: 'User registration failed' });
+    //     } else {
+    //         res.status(201).json({ message: 'User registered successfully' });
+    //     }
+    // });
+
+    try {
+        await userModel.createUser(newUser);
+        res.status(201).json({ message: 'User registered successfully' });
+    } catch (error) {
+        res.status(500).send({ error: `User registration failed : ${error.message}` });
+    }
 }
 
 function verifyToken(req, res, next) {
@@ -54,9 +62,8 @@ function login(req, res) {
     }
     console.log(testUsername);
     console.log(testPassword);
-    let qr = `select * from user where user_name='${testUsername}' and password = '${testPassword}'`;
 
-    userModel.queryUser(qr, (err, result) => {
+    userModel.queryUser(testUsername, testPassword, (err, result) => {
         if (err || result.length == 0) {
             res.status(500).send({ error: "Login failed" });
         } else {
@@ -72,8 +79,8 @@ function login(req, res) {
 }
 
 function getfeed(req, res) {
-    let ar = 'SELECT caption, media_url from post as post inner join post_media as media on post.post_media_id = media.id ORDER BY post.created_at;';
-    userModel.queryUser(ar, (err, result) => {
+
+    userModel.getFeedUser((err, result) => {
         if (err || result.length == 0) {
             res.status(500).send({ error: "Login failed" });
         } else {
@@ -84,9 +91,9 @@ function getfeed(req, res) {
 }
 
 function getfollower(req, res) {
-    const user_name = req.user.user_name;
-    let ar = `select user.id as id, user_name, count(following_user_id) as follower from user left join follower as followers on user.id = followers.followed_user_id group by id having user.user_name = "${user_name}"`;
-    userModel.queryUser(ar, (err, result) => {
+    const username = req.user.user_name;
+
+    userModel.getFollower(username, (err, result) => {
         if (err || result.length == 0) {
             res.status(500).send({ error: "Login failed" });
         } else {
