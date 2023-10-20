@@ -13,6 +13,7 @@ function verifyToken(req, res, next) {
         if (err) {
             res.status(500).send({ error: 'Authentication failed' });
         } else {
+            console.log("decoded value is")
             console.log(decoded)
             req.user = decoded
             next();
@@ -48,18 +49,17 @@ async function signup(req, res) {
 
 
 
-function login(req, res) {
-    const { testUsername, testPassword } = req.body;
-    if (testUsername == undefined || testPassword == undefined) {
-        res.status(500).send({ error: "Authentication failed" });
-    }
-    console.log(testUsername);
-    console.log(testPassword);
+async function login(req, res) {
+    try {
+        const { testUsername, testPassword } = await req.body;
+        if (testUsername == undefined || testPassword == undefined) {
+            res.status(500).send({ error: "Authentication failed" });
+        }
+        console.log(testUsername);
+        console.log(testPassword);
+        const result = await userModel.queryUser(testUsername, testPassword);
 
-
-
-    function callBack(err, result) {
-        if (err || result.length == 0) {
+        if (result[0].length == 0) {
             res.status(500).send({ error: "Login failed" });
         } else {
             let resp = {
@@ -70,72 +70,98 @@ function login(req, res) {
             let token = jwt.sign(resp, "sreerag", { expiresIn: 860000 });
             res.status(200).send({ auth: true, token: token });
         }
+
     }
-    userModel.queryUser(testUsername, testPassword, callBack);
-
+    catch (error) {
+        console.log(error)
+    }
 }
 
-function getfeed(req, res) {
-
-    userModel.getFeedUser((err, result) => {
-        if (err || result.length == 0) {
+async function getfeed(req, res) {
+    try {
+        const result = await userModel.getFeedUser();
+        if (result[0].length == 0) {
             res.status(500).send({ error: "Login failed" });
         } else {
-            console.log(result);
-            res.status(200).send(result);
+            console.log(result[0]);
+            res.status(200).send(result[0]);
         }
-    });
+    }
+    catch (error) {
+        console.log(error)
+    }
+
 }
 
-function getfollower(req, res) {
-    const username = req.user.user_name;
-
-    userModel.getFollower(username, (err, result) => {
-        if (err || result.length == 0) {
+async function getfollower(req, res) {
+    try {
+        const username = await req.user.user_name;
+        console.log(username)
+        const result = await userModel.getFollower(username)
+        if (result.length == 0) {
             res.status(500).send({ error: "Login failed" });
         } else {
-            console.log(result);
-            res.status(200).send(result);
+            console.log(result[0]);
+            res.status(200).send(result[0]);
         }
-    });
+    }
+    catch (error) {
+        console.log(error)
+    }
 }
 
-function getOtherFollower(req, res) {
-    const username = req.body.user_name;
-    console.log(username)
-    userModel.getFollower(username, (err, result) => {
-        if (err || result.length == 0) {
+
+async function getOtherFollower(req, res) {
+    try {
+        const username = await req.body.user_name;
+        console.log(username)
+        const result = await userModel.getFollower(username);
+        if (result[0].length == 0) {
             res.status(500).send({ error: "get other follower falied " });
         } else {
-            console.log(result);
-            res.status(200).send(result);
+            console.log(result[0]);
+            res.status(200).send(result[0]);
         }
-    });
-}
-function getfollowing(req, res) {
-    const username = req.user.user_name;
 
-    userModel.getFollowing(username, (err, result) => {
-        if (err || result.length == 0) {
+    }
+    catch (error) {
+        console.log(error)
+    }
+}
+async function getfollowing(req, res) {
+    try {
+        const username = await req.user.user_name;
+        console.log(username)
+        const result = await userModel.getFollowing(username);
+
+        if (result.length == 0) {
             res.status(500).send({ error: "Login failed" });
         } else {
-            console.log(result);
-            res.status(200).send(result);
+            console.log(result[0]);
+            res.status(200).send(result[0]);
         }
-    });
+
+    }
+    catch (error) {
+        console.log(error)
+    }
 }
 
-function getOtherFollowing(req, res) {
-    const username = req.body.user_name;
-    console.log(username)
-    userModel.getFollowing(username, (err, result) => {
-        if (err || result.length == 0) {
+async function getOtherFollowing(req, res) {
+    try {
+        const username = await req.body.user_name;
+        console.log(username)
+        const result = await userModel.getFollowing(username);
+        if (result.length == 0) {
             res.status(500).send({ error: "get other follower falied " });
         } else {
-            console.log(result);
-            res.status(200).send(result);
+            console.log(result[0]);
+            res.status(200).send(result[0]);
         }
-    });
+    }
+    catch (error) {
+        console.log(error)
+    }
 }
 
 async function search(req, res) {
@@ -144,14 +170,15 @@ async function search(req, res) {
         if (user_name == undefined) {
             res.status(500).send({ error: "please type something " });
         } else {
-            userModel.getSearch(user_name, (err, result) => {
-                if (err || result.length == 0) {
-                    res.status(500).send({ error: "No user found" });
-                } else {
-                    console.log(result);
-                    res.status(200).send(result);
-                }
-            });
+            const result = await userModel.getSearch(user_name);
+
+            if (result[0].length == 0) {
+                res.status(500).send({ error: "No user found" });
+            } else {
+                console.log(result[0]);
+                res.status(200).send(result[0]);
+            }
+
 
         }
     }
