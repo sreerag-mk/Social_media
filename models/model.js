@@ -16,9 +16,9 @@ con.connect((err) => {
     }
 });
 
-function createUser(newUser) {
-    return new Promise((resolve, reject) => {
-        con.query(
+async function createUser(newUser) {
+    try {
+        const result = await con.query(
             'INSERT INTO user (first_name, last_name, user_name, password, bio, phone_number, address, dob, gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
             [
                 newUser.first_name,
@@ -30,18 +30,15 @@ function createUser(newUser) {
                 newUser.address,
                 newUser.dob,
                 newUser.gender,
-            ],
-            (error, results) => {
-                if (error) {
-                    if (error) {
-                        reject(error)
-                    }
-                } else {
-                    resolve(results)
-                }
-            }
+            ]
         );
-    })
+        console.log(result)
+    }
+    catch (error) {
+        return error
+
+    }
+
 
 }
 
@@ -58,9 +55,22 @@ function getFollower(username, callback) {
         callback(error, results);
     });
 }
+function getFollowing(username, callback) {
+    let ar = `SELECT user.id,user_name,(SELECT COUNT(*) FROM follower AS f2 WHERE f2.following_user_id = user.id) AS following FROM user WHERE user.user_name = "${username}" ORDER BY user.id;`;
+    con.query(ar, (error, results) => {
+        callback(error, results);
+    });
+}
 function getFeedUser(callback) {
 
     let ar = 'SELECT caption, media_url from post as post inner join post_media as media on post.post_media_id = media.id ORDER BY post.created_at;';
+    con.query(ar, (error, results) => {
+        callback(error, results);
+    });
+}
+function getSearch(value, callback) {
+    console.log(value)
+    let ar = `SELECT * from user where user_name= "${value}"`;
     con.query(ar, (error, results) => {
         callback(error, results);
     });
@@ -71,4 +81,6 @@ module.exports = {
     queryUser,
     getFeedUser,
     getFollower,
+    getSearch,
+    getFollowing,
 };
