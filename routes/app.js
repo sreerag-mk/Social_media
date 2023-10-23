@@ -1,20 +1,21 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const middleWare = require('../middle_ware/middleware')
 const app = express();
 const port = 3000;
 
-const userController = require('../controllers/controller');
+const userController = require('../controllers/auth');
 
 const jsonParser = bodyParser.json();
 
 app.post('/signup', jsonParser, userController.signup);
 app.post('/login', jsonParser, userController.login);
-app.get('/getfeed', userController.verifyToken, userController.getfeed);
-app.post('/getotherfollower', userController.verifyToken, jsonParser, userController.getOtherFollower);
-app.post('/getotherfollowing', userController.verifyToken, jsonParser, userController.getOtherFollowing);
-app.get('/getfollower', userController.verifyToken, userController.getfollower);
-app.get('/getfollowing', userController.verifyToken, userController.getfollowing);
-app.post('/search', userController.verifyToken, jsonParser, userController.search);
+app.get('/getfeed', middleWare.verifyToken, userController.getFeed);
+app.post('/getotherfollower', middleWare.verifyToken, jsonParser, userController.getOtherFollower);
+app.post('/getotherfollowing', middleWare.verifyToken, jsonParser, userController.getOtherFollowing);
+app.get('/getfollower', middleWare.verifyToken, userController.getFollower);
+app.get('/getfollowing', middleWare.verifyToken, userController.getFollowing);
+app.post('/search', middleWare.verifyToken, jsonParser, userController.search);
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

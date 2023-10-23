@@ -1,9 +1,11 @@
 
-const connection = require('./database')
+const connection = require('../config/database')
 
 
 async function createUser(newUser) {
     try {
+        console.log("the new user is here")
+        console.log(newUser)
         const con = await connection.databaseConnection()
         const result = await con.query(
             'INSERT INTO user (first_name, last_name, user_name, password, bio, phone_number, address, dob, gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
@@ -19,21 +21,32 @@ async function createUser(newUser) {
                 newUser.gender,
             ]
         );
+        con.end()
         console.log(result)
     }
     catch (error) {
         return error
 
     }
+}
 
-
+async function checkUser(user_name) {
+    console.log("insose")
+    console.log(user_name)
+    const con = await connection.databaseConnection()
+    let qr = `select user_name from user where user_name="${user_name}"`
+    const results = await con.query(qr)
+    console.log(results[0])
+    con.end()
+    return results
 }
 
 async function queryUser(username, password) {
     try {
         const con = await connection.databaseConnection()
-        let qr = `select * from user where user_name='${username}' and password = '${password}'`;
+        let qr = `select id, user_name from user where user_name='${username}' and password = '${password}'`;
         const results = con.query(qr)
+        con.end()
         return results
     }
     catch (error) {
@@ -45,6 +58,7 @@ async function getFollower(username) {
         const con = await connection.databaseConnection()
         let ar = `select user.id as id, user_name, count(following_user_id) as follower from user left join follower as followers on user.id = followers.followed_user_id group by id having user.user_name = "${username}"`;
         const result = con.query(ar)
+        con.end()
         return result
     }
     catch (error) {
@@ -56,6 +70,7 @@ async function getFollowing(username) {
         const con = await connection.databaseConnection()
         let ar = `SELECT user.id,user_name,(SELECT COUNT(*) FROM follower AS f2 WHERE f2.following_user_id = user.id) AS following FROM user WHERE user.user_name = "${username}" ORDER BY user.id;`;
         const result = con.query(ar)
+        con.end()
         return result
 
     }
@@ -69,6 +84,7 @@ async function getFeedUser() {
         const con = await connection.databaseConnection()
         let ar = 'SELECT caption, media_url from post as post inner join post_media as media on post.post_media_id = media.id ORDER BY post.created_at;';
         const result = con.query(ar);
+        con.end()
         return result;
     }
     catch (error) {
@@ -82,6 +98,7 @@ async function getSearch(value) {
         console.log(value)
         let ar = `SELECT * from user where user_name= "${value}"`;
         const result = con.query(ar)
+        con.end()
         return result;
     }
     catch (error) {
@@ -95,5 +112,6 @@ module.exports = {
     getFeedUser,
     getFollower,
     getSearch,
+    checkUser,
     getFollowing,
 };
