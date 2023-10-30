@@ -1,12 +1,13 @@
+/* eslint-disable no-console */
 const userModel = require('../models/model');
 const middleWare = require('../middle_ware/middleware')
 const jwt = middleWare.jwt;
 
 async function signup(req, res) {
-    const { first_name, last_name, user_name, password, bio, phone_number, address, dob, gender } = req.body;
+    const { first_name, last_name, user_name, password, phone_number, address, dob, gender } = req.body;
     const exUser = await userModel.checkUser(user_name)
     const user = exUser[0]
-    if (first_name != "" || last_name != "" || user_name != "" || password != "" || bio != "" || phone_number != "" || address != "" || dob != "" || gender != "") {
+    if (first_name != "" || last_name != "" || user_name != "" || password != "" || phone_number != "" || address != "" || dob != "" || gender != "") {
         const containsKey = user.some(obj => obj.hasOwnProperty('user_name'));
         if (containsKey) {
             console.log("Error ")
@@ -17,7 +18,6 @@ async function signup(req, res) {
                 last_name,
                 user_name,
                 password,
-                bio,
                 phone_number,
                 address,
                 dob,
@@ -84,7 +84,7 @@ async function login(req, res) {
                 id: await results[0].id,
                 user_name: await results[0].user_name
             };
-            let token = jwt.sign(resp, "asdfghjkl1234567890qwertyuiop1234567890-qwertyuiopasdfghjklzxcvbnm,asdfghjklwertyuio234567890-qwertyuiopasdfghjkla3w4sex5dcr6tv7byuhnim2aes4dr5tf6g7y8hu9jik3w4xe5rctf6yubhjim", { expiresIn: '860000' });
+            let token = jwt.sign(resp, "asdfghjkl1234567890qwertyuiop1234567890-qwertyuiopasdfghjklzxcvbnm,asdfghjklwertyuio234567890-qwertyuiopasdfghjkla3w4sex5dcr6tv7byuhnim2aes4dr5tf6g7y8hu9jik3w4xe5rctf6yubhjim", { expiresIn: 86000000000000 });
             const data = {
                 message: 'Login is completed',
                 auth: true,
