@@ -1,4 +1,39 @@
-const userModel = require('../models/model');
+const postModel = require('../models/post');
+
+
+async function uploadImage(req, res) {
+    const userId = await req.user.id;
+    console.log(userId)
+    console.log("the image is ")
+    try {
+        const image = req.file;
+        const { content_type, caption, content, status } = req.body;
+        // console.log(image)
+        console.log(content_type)
+        console.log(caption)
+        console.log(content)
+        console.log(status)
+        console.log(userId)
+        console.log(image.path)
+        await postModel.uploadImage(image.path, content_type, caption, content, status, userId)
+        const data = {
+            message: 'Post created!',
+            status: 200,
+            success: true
+        };
+        res.status(500).send(data)
+
+    }
+    catch {
+        console.log("An error occured at make post")
+        const data = {
+            message: 'Error occured',
+            status: 500,
+            success: false
+        };
+        res.status(500).send(data)
+    }
+}
 
 async function makePost(req, res) {
     try {
@@ -15,7 +50,7 @@ async function makePost(req, res) {
                 content,
                 status,
             }
-            await userModel.createPostUrl(newPost);
+            await postModel.createPostUrl(newPost);
             const data = {
                 message: 'Post created!',
                 status: 200,
@@ -53,7 +88,7 @@ async function deletePost(req, res) {
         const userId = await req.user.id;
         console.log(userId)
         const { postId } = req.body;
-        await userModel.deletePost(postId)
+        await postModel.deletePost(postId)
         const data = {
             message: 'Deleted succesfully',
             status: 200,
@@ -73,5 +108,13 @@ async function deletePost(req, res) {
 
 module.exports = {
     makePost,
-    deletePost
+    deletePost,
+    uploadImage
 };
+
+
+
+
+
+
+

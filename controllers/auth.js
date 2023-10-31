@@ -1,11 +1,12 @@
 /* eslint-disable no-console */
-const userModel = require('../models/model');
-const middleWare = require('../middle_ware/middleware')
+const authModel = require('../models/auth');
+
+const middleWare = require('../middle_ware/authverify')
 const jwt = middleWare.jwt;
 
 async function signup(req, res) {
     const { first_name, last_name, user_name, password, phone_number, address, dob, gender } = req.body;
-    const exUser = await userModel.checkUser(user_name)
+    const exUser = await authModel.checkUser(user_name)
     const user = exUser[0]
     if (first_name != "" || last_name != "" || user_name != "" || password != "" || phone_number != "" || address != "" || dob != "" || gender != "") {
         const containsKey = user.some(obj => obj.hasOwnProperty('user_name'));
@@ -24,7 +25,7 @@ async function signup(req, res) {
                 gender,
             };
             try {
-                await userModel.createUser(newUser);
+                await authModel.createUser(newUser);
                 const data = {
                     message: 'User registered successfully',
                     status: 200,
@@ -64,7 +65,7 @@ async function login(req, res) {
         }
         console.log(testUsername);
         console.log(testPassword);
-        const result = await userModel.queryUser(testUsername, testPassword);
+        const result = await authModel.queryUser(testUsername, testPassword);
         console.log(result[0])
         const results = result[0]
         console.log(results)
@@ -107,222 +108,8 @@ async function login(req, res) {
     }
 }
 
-async function getFeed(req, res) {
-    try {
-        const result = await userModel.getFeedUser();
-        if (result[0].length == 0) {
-            const data = {
-                message: 'Login failed',
-                status: 500,
-                success: false
-            };
-            res.status(500).send(data);
-        } else {
-            console.log(result[0]);
-            const data = {
-                message: result[0],
-                status: 200,
-                success: true
-            };
-            res.status(200).send(data);
-        }
-    }
-    catch (error) {
-        console.log("An error occured at get feed")
-        const data = {
-            message: 'Login failed',
-            status: 500,
-            success: false
-        };
-        res.status(500).send(data)
-    }
-
-}
-
-async function getFollower(req, res) {
-    try {
-        const userName = await req.user.user_name;
-        console.log(userName)
-        const result = await userModel.getFollower(userName)
-        if (result.length == 0) {
-            const data = {
-                message: 'Invallid user name',
-                status: 500,
-                success: false
-            };
-            res.status(500).send(data);
-        } else {
-            const data = {
-                message: result[0],
-                status: 200,
-                success: true
-            };
-            console.log(result[0]);
-            res.status(200).send(data);
-        }
-    }
-    catch (error) {
-        const data = {
-            message: 'Error occured',
-            status: 500,
-            success: false
-        };
-        res.status(500).send(data)
-        console.log("an error at getFollower")
-    }
-}
-
-
-async function getOtherFollower(req, res) {
-    try {
-        const userName = await req.body.user_name;
-        console.log(userName)
-        const result = await userModel.getFollower(userName);
-        if (result[0].length == 0) {
-            const data = {
-                message: 'No user found',
-                status: 500,
-                success: false
-            };
-            res.status(500).send(data);
-        } else {
-            console.log(result[0]);
-            const data = {
-                message: result[0],
-                status: 200,
-                success: true
-            };
-            res.status(200).send(data);
-        }
-
-    }
-    catch (error) {
-        console.log("an error occured at getOtherFollower")
-        const data = {
-            message: "ERROR",
-            status: 500,
-            success: false
-        }
-        res.status(200).send(data);
-    }
-}
-async function getFollowing(req, res) {
-    try {
-        const userName = await req.user.user_name;
-        console.log(userName)
-        const result = await userModel.getFollowing(userName);
-
-        if (result.length == 0) {
-            const data = {
-                message: 'No user found',
-                status: 500,
-                success: false
-            };
-            res.status(500).send(data);
-        } else {
-            console.log(result[0]);
-            const data = {
-                message: result[0],
-                status: 200,
-                success: true
-            };
-            res.status(200).send(data);
-        }
-
-    }
-    catch (error) {
-        console.log("error occured at get following")
-        const data = {
-            message: "ERROR",
-            status: 500,
-            success: false
-        };
-        res.status(500).send(data);
-    }
-}
-
-async function getOtherFollowing(req, res) {
-    try {
-        const userName = await req.body.user_name;
-        console.log(userName)
-        const result = await userModel.getFollowing(userName);
-        if (result.length == 0) {
-            const data = {
-                message: "User not found",
-                status: 500,
-                success: false
-            };
-            res.status(500).send(data);
-        } else {
-            console.log(result[0]);
-            const data = {
-                message: result[0],
-                status: 200,
-                success: true
-            };
-            res.status(200).send(data);
-        }
-    }
-    catch (error) {
-        console.log("an error occured at getOtherFollowing")
-        const data = {
-            message: "ERROR",
-            status: 500,
-            success: false
-        };
-        res.status(500).send(data);
-
-    }
-}
-
-async function search(req, res) {
-    try {
-        const { user_name } = await req.body;
-        if (user_name == undefined) {
-            res.status(500).send({ error: "please type something " });
-        } else {
-            const result = await userModel.getSearch(user_name);
-
-            if (result[0].length == 0) {
-
-                const data = {
-                    message: "No user found",
-                    status: 500,
-                    success: false
-                };
-                res.status(500).send(data);
-            } else {
-                console.log(result[0]);
-
-                const data = {
-                    message: result[0],
-                    status: 200,
-                    success: true
-                };
-                res.status(200).send(data);
-            }
-        }
-    }
-    catch (error) {
-        console.log("an error occured at search")
-        const data = {
-            message: "ERROR",
-            status: 500,
-            success: false
-        };
-        res.status(500).send(data);
-    }
-
-}
-
 
 module.exports = {
     signup,
     login,
-    getFeed,
-    getFollower,
-    search,
-    getOtherFollower,
-    getOtherFollowing,
-    getFollowing
 };

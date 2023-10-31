@@ -1,13 +1,11 @@
 /* eslint-disable prefer-destructuring */
-const userModel = require('../models/model');
+const bioModel = require('../models/bio');
 
 async function addBio(req, res) {
-    console.log("hello world")
     try {
         const userId = await req.user.id;
         const newBio = req.body.newBio;
-        console.log(newBio)
-        await userModel.addingBio(userId, newBio);
+        await bioModel.addingBio(userId, newBio);
         const data = {
             message: 'User added bio successfully',
             status: 200,
@@ -24,7 +22,6 @@ async function addBio(req, res) {
         };
         res.status(500).send(data)
         console.log("an error at addbio")
-        console.log(error)
     }
 }
 
@@ -33,7 +30,7 @@ async function editBio(req, res) {
     try {
         const userId = await req.user.id;
         const newBio = req.body.newBio;
-        await userModel.editingBio(userId, newBio);
+        await bioModel.editingBio(userId, newBio);
         const data = {
             message: 'User updated bio successfully',
             status: 200,

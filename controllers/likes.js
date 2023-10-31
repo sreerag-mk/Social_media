@@ -1,10 +1,10 @@
-const userModel = require('../models/model');
+const likeModel = require('../models/likes');
 
 async function like(req, res) {
     try {
         const userId = await req.user.id;
         const { type, id } = req.body;
-        const userCheck = await userModel.checkUserLiked(userId, id, type)
+        const userCheck = await likeModel.checkUserLiked(userId, id, type)
         console.log(userCheck)
         const userChecked = userCheck[0]
         if (userChecked.length === 0) {
@@ -16,7 +16,7 @@ async function like(req, res) {
                     type,
                     id
                 }
-                await userModel.addLike(newLike)
+                await likeModel.addLike(newLike)
                 const data = {
                     message: 'like created!',
                     status: 200,
@@ -40,7 +40,7 @@ async function like(req, res) {
                     type,
                     id
                 }
-                await userModel.disLike(newLike)
+                await likeModel.disLike(newLike)
                 const data = {
                     message: 'Like has been removed',
                     status: 200,
@@ -76,7 +76,7 @@ async function disLike(req, res) {
                 type,
                 id
             }
-            await userModel.disLike(newLike)
+            await likeModel.disLike(newLike)
             const data = {
                 message: 'like has been removed',
                 status: 200,
@@ -107,7 +107,7 @@ async function likeCount(req, res) {
                 type,
                 id
             }
-            const result = await userModel.likeCount(newLike)
+            const result = await likeModel.likeCount(newLike)
             const data = {
                 message: result[0][0].post,
                 status: 200,
@@ -139,8 +139,8 @@ async function likedList(req, res) {
                 type,
                 id
             }
-            const count = await userModel.likeCount(newLike)
-            const result = await userModel.likedList(newLike)
+            const count = await likeModel.likeCount(newLike)
+            const result = await likeModel.likedList(newLike)
             let finalResult = [];
             for (let i = 0; i < count[0][0].post; i++) {
                 finalResult.push(result[0][i].user_name)
@@ -179,7 +179,7 @@ async function userLiked(req, res) {
                 type,
                 userId
             }
-            const result = await userModel.userLiked(newLike)
+            const result = await likeModel.userLiked(newLike)
             console.log(result)
             const data = {
                 message: result,
@@ -201,10 +201,6 @@ async function userLiked(req, res) {
     }
 
 }
-
-
-
-
 
 module.exports = {
     like,
