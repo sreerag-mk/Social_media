@@ -1,28 +1,39 @@
 const postModel = require('../models/post');
+const fs = require('fs');
+
 
 
 async function uploadImage(req, res) {
     const userId = await req.user.id;
-    console.log(userId)
-    console.log("the image is ")
     try {
         const image = req.file;
         const { content_type, caption, content, status } = req.body;
-        // console.log(image)
         console.log(content_type)
-        console.log(caption)
-        console.log(content)
-        console.log(status)
-        console.log(userId)
-        console.log(image.path)
-        await postModel.uploadImage(image.path, content_type, caption, content, status, userId)
-        const data = {
-            message: 'Post created!',
-            status: 200,
-            success: true
-        };
-        res.status(500).send(data)
+        if (content_type == "photo") {
+            await postModel.uploadImage(image.path, content_type, caption, content, status, userId)
+            const data = {
+                message: 'Post created!',
+                status: 200,
+                success: true
+            };
+            res.status(500).send(data)
+        } else if (content_type == "video") {
+            if (req.file.size > 15000000) {
+                fs.unlinkSync(req.file.path);
+                return res.status(400).json({ error: 'File size exceeds the 15 MB limit' });
+            }
+            else {
+                await postModel.uploadImage(image.path, content_type, caption, content, status, userId)
+                const data = {
+                    message: 'Post created!',
+                    status: 200,
+                    success: true
+                };
+                res.status(500).send(data)
+            }
 
+
+        }
     }
     catch {
         console.log("An error occured at make post")
