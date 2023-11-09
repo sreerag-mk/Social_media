@@ -21,7 +21,7 @@ app.use('/like', likeRoute)
 app.use('/post', postRoute)
 app.use('/comment', commentRoute)
 app.use('/hashtag', hashTagRoute)
-app.use('/group', authRoute)
+app.use('/group', groupRoute)
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

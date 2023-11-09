@@ -2,11 +2,9 @@ const connection = require('../config/database')
 
 
 async function checkUserComment(userId, id) {
-    console.log(userId);
     const con = await connection.databaseConnection()
     let qr = `select id from comments where user_id = ${userId} and post_id = ${id};`
     const results = await con.query(qr)
-    console.log(results[0])
     con.end()
     return results
 }
@@ -19,7 +17,7 @@ async function addComment(newComment) {
         )
     }
     catch (error) {
-        console.log(error)
+        return error
     }
 }
 
@@ -31,7 +29,7 @@ async function addReplay(newReplay) {
         )
     }
     catch (error) {
-        console.log(error)
+        return error
     }
 }
 
@@ -45,7 +43,7 @@ async function removeComment(newComment) {
         )
     }
     catch (error) {
-        console.log(error)
+        return error
     }
 }
 
@@ -60,7 +58,7 @@ async function removeReplay(newReplay) {
         )
     }
     catch (error) {
-        console.log(error)
+        return error
     }
 }
 
@@ -70,7 +68,7 @@ async function commentCount(newComment) {
         return await con.query(`select count(id) as comments from comments group by post_id having post_id = ${newComment.id} ;`)
     }
     catch (error) {
-        console.log(error)
+        return error
     }
 }
 
@@ -80,7 +78,7 @@ async function replayCount(newReplay) {
         return await con.query(`select count(id) as replays from replays group by comment_id having comment_id = ${newReplay.id} ;`)
     }
     catch (error) {
-        console.log(error)
+        return error
     }
 }
 
@@ -89,11 +87,10 @@ async function replayCount(newReplay) {
 async function commentList(newComment) {
     try {
         const con = await connection.databaseConnection();
-        console.log("indside user comment")
         return await con.query(`SELECT user.user_name from comments inner join user as user on user.id = comments.user_id  where post_id = "${newComment.id}" ;`)
     }
     catch (error) {
-        console.log(error)
+        return error
     }
 }
 
@@ -103,7 +100,7 @@ async function userCommented(userId) {
         return await con.query(`SELECT  count(user.user_name) as user from comments inner join user as user on user.id = comments.user_id  where user.id = "${userId}";`)
     }
     catch (error) {
-        console.log(error)
+        return error
     }
 }
 

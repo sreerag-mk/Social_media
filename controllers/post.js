@@ -5,19 +5,18 @@ const fs = require('fs');
 
 
 async function uploadImage(req, res) {
-    const userId = await req.user.id;
+    const userId = req.user.id;
     try {
         const image = req.file;
         const { content_type, caption, content, status } = req.body;
-        console.log(content_type)
+
         if (content_type == "photo") {
             await postModel.uploadImage(image.path, content_type, caption, content, status, userId)
             const data = {
                 message: 'Post created!',
-                status: 200,
                 success: true
             };
-            res.status(500).send(data)
+            res.status(200).send(data)
         } else if (content_type == "video") {
             if (req.file.size > 15000000) {
                 fs.unlinkSync(req.file.path);
@@ -27,20 +26,15 @@ async function uploadImage(req, res) {
                 await postModel.uploadImage(image.path, content_type, caption, content, status, userId)
                 const data = {
                     message: 'Post created!',
-                    status: 200,
                     success: true
                 };
-                res.status(500).send(data)
+                res.status(200).send(data)
             }
-
-
         }
     }
     catch {
-        console.log("An error occured at make post")
         const data = {
             message: 'Error occured',
-            status: 500,
             success: false
         };
         res.status(500).send(data)
@@ -49,8 +43,7 @@ async function uploadImage(req, res) {
 
 async function makePost(req, res) {
     try {
-        const userId = await req.user.id;
-        console.log(userId)
+        const userId = req.user.id;
         const { media_url, content_type, caption, content, status } = req.body;
 
         if (media_url != "") {
@@ -65,17 +58,13 @@ async function makePost(req, res) {
             await postModel.createPostUrl(newPost);
             const data = {
                 message: 'Post created!',
-                status: 200,
                 success: true
             };
-            res.status(500).send(data)
-            console.log(newPost)
+            res.status(200).send(data)
         }
         else {
-            console.log("An error occured at make post")
             const data = {
                 message: 'Error occured',
-                status: 500,
                 success: false
             };
             res.status(500).send(data)
@@ -83,10 +72,8 @@ async function makePost(req, res) {
 
     }
     catch {
-        console.log("An error occured at make post")
         const data = {
             message: 'Error occured',
-            status: 500,
             success: false
         };
         res.status(500).send(data)
@@ -95,15 +82,12 @@ async function makePost(req, res) {
 }
 
 async function deletePost(req, res) {
-    console.log("this works")
     try {
-        const userId = await req.user.id;
-        console.log(userId)
+        const userId = req.user.id;
         const { postId } = req.body;
-        await postModel.deletePost(postId)
+        await postModel.deletePost(postId, userId)
         const data = {
             message: 'Deleted succesfully',
-            status: 200,
             success: true
         };
         res.status(200).send(data)
@@ -111,7 +95,6 @@ async function deletePost(req, res) {
     catch (error) {
         const data = {
             message: 'Error occured',
-            status: 500,
             success: false
         };
         res.status(500).send(data)
@@ -121,21 +104,15 @@ async function deletePost(req, res) {
 
 
 async function savedpost(req, res) {
-    const userId = await req.user.id;
-    console.log(userId)
-    console.log("entering the controller 1  the saved postid is ")
+    const userId = req.user.id;
     const { savedposts } = req.body
-    console.log(savedposts)
     if (savedpost != "") {
-        console.log("entering the controller 1 ")
         await postModel.savedpost(userId, savedposts)
-        console.log("entering the controller 1 ")
         const data = {
             message: 'post saved',
-            status: 200,
             success: true
         };
-        res.status(500).send(data)
+        res.status(200).send(data)
     }
     else {
         const data = {

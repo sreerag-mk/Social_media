@@ -2,15 +2,12 @@ const likeModel = require('../models/likes');
 
 async function like(req, res) {
     try {
-        const userId = await req.user.id;
+        const userId = req.user.id;
         const { type, id } = req.body;
         const userCheck = await likeModel.checkUserLiked(userId, id, type)
-        console.log(userCheck)
         const userChecked = userCheck[0]
         if (userChecked.length === 0) {
-            console.log("inside 1st condition")
             if (type != "" || id != "") {
-
                 const newLike = {
                     userId,
                     type,
@@ -19,18 +16,16 @@ async function like(req, res) {
                 await likeModel.addLike(newLike)
                 const data = {
                     message: 'like created!',
-                    status: 200,
                     success: true
                 };
-                res.status(500).send(data)
+                res.status(200).send(data)
             }
             else {
                 const data = {
                     message: 'please enter the values',
-                    status: 500,
                     success: false
                 };
-                res.status(500).send(data)
+                res.status(200).send(data)
             }
         }
         else {
@@ -43,21 +38,17 @@ async function like(req, res) {
                 await likeModel.disLike(newLike)
                 const data = {
                     message: 'Like has been removed',
-                    status: 200,
                     success: true
                 };
                 res.status(200).send(data)
             }
         }
-        console.log("UserCheck")
 
 
     }
     catch {
-        console.log("An error occured at like")
         const data = {
             message: 'Error occured',
-            status: 500,
             success: false
         };
         res.status(500).send(data)
@@ -67,8 +58,7 @@ async function like(req, res) {
 
 async function disLike(req, res) {
     try {
-        const userId = await req.user.id;
-        console.log(userId)
+        const userId = req.user.id;
         const { type, id } = req.body;
         if (type != "" || id != "") {
             const newLike = {
@@ -79,18 +69,15 @@ async function disLike(req, res) {
             await likeModel.disLike(newLike)
             const data = {
                 message: 'like has been removed',
-                status: 200,
                 success: true
             };
-            res.status(500).send(data)
+            res.status(200).send(data)
         }
 
     }
     catch {
-        console.log("An error occured at like")
         const data = {
             message: 'Error occured',
-            status: 500,
             success: false
         };
         res.status(500).send(data)
@@ -99,7 +86,6 @@ async function disLike(req, res) {
 }
 
 async function likeCount(req, res) {
-    console.log("likeCount is open");
     try {
         const { type, id } = req.body;
         if (type != "" || id != "") {
@@ -110,18 +96,15 @@ async function likeCount(req, res) {
             const result = await likeModel.likeCount(newLike)
             const data = {
                 message: result[0][0].post,
-                status: 200,
                 success: true
             };
-            res.status(500).send(data)
+            res.status(200).send(data)
         }
 
     }
     catch {
-        console.log("An error occured at like count")
         const data = {
             message: 'Error occured',
-            status: 500,
             success: false
         };
         res.status(500).send(data)
@@ -131,7 +114,6 @@ async function likeCount(req, res) {
 
 
 async function likedList(req, res) {
-    console.log("likedList is open");
     try {
         const { type, id } = req.body;
         if (type != "" || id != "") {
@@ -143,24 +125,19 @@ async function likedList(req, res) {
             const result = await likeModel.likedList(newLike)
             let finalResult = [];
             for (let i = 0; i < count[0][0].post; i++) {
-                console.log(result[0][i].user_name)
                 finalResult.push(result[0][i].user_name)
             }
-            console.log(finalResult)
             const data = {
                 message: finalResult,
-                status: 200,
                 success: true
             };
-            res.status(500).send(data)
+            res.status(200).send(data)
         }
 
     }
     catch {
-        console.log("An error occured at liked user")
         const data = {
             message: 'Error occured',
-            status: 500,
             success: false
         };
         res.status(500).send(data)
@@ -170,9 +147,7 @@ async function likedList(req, res) {
 
 
 async function userLiked(req, res) {
-    console.log("userliked is open");
-    const userId = await req.user.id;
-    console.log(userId)
+    const userId = req.user.id;
     try {
         const { type } = req.body;
         if (type != "") {
@@ -182,21 +157,17 @@ async function userLiked(req, res) {
             }
             const result = await likeModel.userLiked(newLike)
             const finalResult = result[0][0].user
-            console.log(finalResult)
             const data = {
-                message: result,
-                status: 200,
+                message: finalResult,
                 success: true
             };
-            res.status(500).send(data)
+            res.status(200).send(data)
         }
 
     }
     catch {
-        console.log("An error occured at liked user")
         const data = {
             message: 'Error occured',
-            status: 500,
             success: false
         };
         res.status(500).send(data)

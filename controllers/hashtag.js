@@ -1,25 +1,21 @@
 const hashtagModel = require('../models/hashtag');
 
 async function makeHashtag(req, res) {
-    const userId = await req.user.id;
+    const userId = req.user.id;
     try {
         const { tag } = req.body;
         if (tag) {
-            console.log("inside hashtag creation")
             await hashtagModel.addHashtag(userId, tag)
             const data = {
                 message: 'hashtag created!',
-                status: 200,
                 success: true
             };
-            res.status(500).send(data)
+            res.status(200).send(data)
         }
     }
     catch {
-        console.log("An error occured at make post")
         const data = {
             message: 'Error occured',
-            status: 500,
             success: false
         };
         res.status(500).send(data)
@@ -33,7 +29,6 @@ async function deleteHashtag(req, res) {
         await hashtagModel.deleteHashtag(userId, tag);
         const data = {
             message: 'Deleted succesfully',
-            status: 200,
             success: true
         };
         res.status(200).send(data)
@@ -41,7 +36,6 @@ async function deleteHashtag(req, res) {
     catch (error) {
         const data = {
             message: 'Error occured',
-            status: 500,
             success: false
         };
         res.status(500).send(data)
@@ -55,7 +49,6 @@ async function deletePost(req, res) {
         await hashtagModel.deletePost(userId, id);
         const data = {
             message: 'Deleted succesfully',
-            status: 200,
             success: true
         };
         res.status(200).send(data)
@@ -63,7 +56,6 @@ async function deletePost(req, res) {
     catch (error) {
         const data = {
             message: 'Error occured',
-            status: 500,
             success: false
         };
         res.status(500).send(data)
@@ -75,21 +67,16 @@ async function addPost(req, res) {
         const userId = req.user.id;
         const { postId, hashtagId } = req.body;
         const userCheck = await hashtagModel.userCheck(userId, postId, hashtagId);
-        console.log("user check")
-        console.log(userCheck)
-        console.log(postId)
         if (userCheck == postId) {
             await hashtagModel.addPost(userId, postId, hashtagId);
             const data = {
                 message: 'post added to hastag succesfully',
-                status: 200,
                 success: true
             };
             res.status(200).send(data)
         } else {
             const data = {
                 message: 'This user cant add this post to the hashtag',
-                status: 500,
                 success: false
             };
             res.status(500).send(data)
@@ -98,7 +85,6 @@ async function addPost(req, res) {
     catch (error) {
         const data = {
             message: 'Error occured at adding post to an hashtag',
-            status: 500,
             success: false
         };
         res.status(500).send(data)

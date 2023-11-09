@@ -1,27 +1,31 @@
 const connection = require('../config/database')
 
 
-async function deletePost(postId) {
+async function deletePost(postId, userId) {
     try {
-        console.log("delete post");
         const con = await connection.databaseConnection()
-        const urlId = await con.query(`select post_media_id from post where id = ${postId} `)
+        const urlId = await con.query(`select post_media_id from post where id = ${postId} and user_id = ${userId}; `)
         const mediaId = urlId[0][0].post_media_id
-        await con.query(
-            `delete from post where id = ${postId} ;`
-        )
-        await con.query(
-            `delete from post_media where id = ${mediaId} ;`
-        )
+        // postId = parseInt(postId)
+
+        if (mediaId) {
+            console.log(mediaId)
+            await con.query(`delete from post where id = ${postId}`)
+            console.log(postId)
+            await con.query(`delete from post_media where id = ${mediaId}`)
+            console.log("inside delete model")
+        }
+        else {
+            return Error
+        }
     }
     catch (error) {
-        console.log(error)
+        return Error
     }
 }
 
 async function createPostUrl(newPost) {
     try {
-        console.log("new user");
         const con = await connection.databaseConnection()
         const result = await con.query(
             'insert into  post_media(media_url, content_type) values (?, ?);',
@@ -31,10 +35,8 @@ async function createPostUrl(newPost) {
             ]
         );
         const insertedId = result[0].insertId;
-        console.log(insertedId)
-        console.log("-------------------------------------------------------------------------------------------------------")
 
-        const createdPost = await con.query(
+        await con.query(
             'insert into  post(user_id, caption, post_media_id, content, status) values (?, ?, ?, ?, ?);',
             [
                 newPost.userId,
@@ -45,20 +47,17 @@ async function createPostUrl(newPost) {
             ]
         )
 
-        console.log(createdPost)
         con.end()
         return insertedId
     }
     catch (error) {
-        console.log("issue at post creation module")
-        console.log(error)
+        return Error
     }
 
 }
 
 async function uploadImage(image, content_type, caption, content, status, userId) {
     try {
-        console.log("upload post");
         const con = await connection.databaseConnection()
         const result = await con.query(
             'insert into  post_media(media_url, content_type) values (?, ?);',
@@ -80,28 +79,19 @@ async function uploadImage(image, content_type, caption, content, status, userId
         )
     }
     catch (error) {
-        console.log(error)
+        return Error
     }
 }
 
-
-
-
-
 async function savedpost(userId, savedpost) {
     try {
-        console.log("entering the module ")
         const con = await connection.databaseConnection();
         await con.query(`insert into saved_post(user_id, post_id) values(${userId}, ${savedpost});`)
     }
     catch (error) {
-        console.log(error)
+        return Error
     }
 }
-
-
-
-
 
 module.exports = {
     createPostUrl,

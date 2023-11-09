@@ -14,7 +14,7 @@ async function addHashtag(userId, content) {
 
     }
     catch (error) {
-        console.log(error)
+        return error
     }
 }
 
@@ -26,24 +26,21 @@ async function deleteHashtag(userId, tag) {
         );
     }
     catch (error) {
-        console.log(error)
+        return error
     }
 }
 
-async function userCheck(userId, postId, hashtagId) {
+async function userCheck(userId, postId) {
     try {
         const con = await connection.databaseConnection();
-        console.log(userId)
-        console.log(postId)
         const result = await con.query(
             `select id from post 
             where user_id = ${userId} and id = ${postId} ;`
         )
-        console.log(result[0][0].id)
         return result[0][0].id
     }
     catch (error) {
-        console.log(error)
+        return error
     }
 }
 
@@ -55,18 +52,16 @@ async function deletePost(userId, id) {
             inner join post on post.id = hashtag_post.post_id
              where hashtag_post.id = ${id} and post.user_id = ${userId};`
         )
-        console.log(result)
-        console.log(result[0][0].id)
         await con.query(
             `delete from hashtag_post where id = ${result[0][0].id};`,
         );
     }
     catch (error) {
-        console.log(error)
+        return error
     }
 }
 
-async function addPost(userId, postId, hashtagId) {
+async function addPost(postId, hashtagId) {
     try {
         const con = await connection.databaseConnection();
 
@@ -80,7 +75,7 @@ async function addPost(userId, postId, hashtagId) {
 
     }
     catch (error) {
-        console.log(error)
+        return error
     }
 }
 

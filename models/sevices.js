@@ -10,21 +10,20 @@ async function getFeedUser(size, offset) {
         return result;
     }
     catch (error) {
-        console.log(error)
+        return error
     }
 
 }
 async function getSearch(value) {
     try {
         const con = await connection.databaseConnection()
-        console.log(value)
         let ar = `SELECT * from user where user_name like "${value}%"`;
         const result = con.query(ar)
         con.end()
         return result;
     }
     catch (error) {
-        console.log(error)
+        return error
     }
 }
 
@@ -42,7 +41,7 @@ async function blockUser(userId, blockedUserId) {
         await con.query(`insert into blocked(rid, bid) values(${userId}, ${blockedUserId})`)
     }
     catch (error) {
-        console.log(error)
+        return error
     }
 }
 async function unblock(userId, blockedUserId) {
@@ -51,18 +50,17 @@ async function unblock(userId, blockedUserId) {
         await con.query(`delete from blocked where rid = ${userId} and bid = ${blockedUserId}`)
     }
     catch (error) {
-        console.log(error)
+        return error
     }
 }
 
 async function reportUser(userId, reportedUserId, reason) {
     try {
-        console.log("entering the module ")
         const con = await connection.databaseConnection();
         await con.query(`insert into report(reporter_user_id, reported_user_id, reason) values(${userId}, ${reportedUserId}, '${reason}')`)
     }
     catch (error) {
-        console.log(error)
+        return error
     }
 }
 

@@ -9,7 +9,7 @@ async function getFollower(username) {
         return result
     }
     catch (error) {
-        console.log(error)
+        return error
     }
 }
 async function getFollowing(username) {
@@ -22,7 +22,7 @@ async function getFollowing(username) {
 
     }
     catch (error) {
-        console.log(error)
+        return error
     }
 
 }
