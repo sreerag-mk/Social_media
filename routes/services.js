@@ -9,6 +9,7 @@ app.use(bodyParser.json());
 
 app.post('/search', middleWare.verifyToken, jsonParser, service.search);
 app.post('/blocked', middleWare.verifyToken, jsonParser, service.blocked)
+app.post('/report', middleWare.verifyToken, jsonParser, service.reports)
 app.get('/getfeed', middleWare.verifyToken, service.getFeed);
 
 module.exports = app;

@@ -1,10 +1,10 @@
 
 const connection = require('../config/database')
 
-async function getFeedUser() {
+async function getFeedUser(size, offset) {
     try {
         const con = await connection.databaseConnection()
-        let ar = 'SELECT caption, media_url from post as post inner join post_media as media on post.post_media_id = media.id ORDER BY post.created_at;';
+        let ar = `SELECT post.id, caption, media_url from post as post inner join post_media as media on post.post_media_id = media.id ORDER BY post.created_at LIMIT ${size} OFFSET ${offset};`;
         const result = con.query(ar);
         con.end()
         return result;
@@ -37,10 +37,6 @@ async function checkUserBlocked(userId, blockedUserId) {
 }
 
 async function blockUser(userId, blockedUserId) {
-    console.log("user id is ")
-    console.log(userId)
-    console.log("blocked user id is ")
-    console.log(blockedUserId)
     try {
         const con = await connection.databaseConnection();
         await con.query(`insert into blocked(rid, bid) values(${userId}, ${blockedUserId})`)
@@ -50,10 +46,6 @@ async function blockUser(userId, blockedUserId) {
     }
 }
 async function unblock(userId, blockedUserId) {
-    console.log("user id is ")
-    console.log(userId)
-    console.log("blocked user id is ")
-    console.log(blockedUserId)
     try {
         const con = await connection.databaseConnection();
         await con.query(`delete from blocked where rid = ${userId} and bid = ${blockedUserId}`)
@@ -63,6 +55,18 @@ async function unblock(userId, blockedUserId) {
     }
 }
 
+async function reportUser(userId, reportedUserId, reason) {
+    try {
+        console.log("entering the module ")
+        const con = await connection.databaseConnection();
+        await con.query(`insert into report(reporter_user_id, reported_user_id, reason) values(${userId}, ${reportedUserId}, '${reason}')`)
+    }
+    catch (error) {
+        console.log(error)
+    }
+}
+
+
 
 module.exports = {
     getFeedUser,
@@ -70,4 +74,5 @@ module.exports = {
     blockUser,
     checkUserBlocked,
     unblock,
+    reportUser,
 };

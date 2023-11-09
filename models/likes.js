@@ -109,10 +109,10 @@ async function userLiked(newLike) {
     try {
         const con = await connection.databaseConnection();
         if (newLike.type === "post") {
-            return await con.query(`SELECT  count(user.user_name) from likes inner join user as user on user.id = likes.user_id  where user.id = "${newLike.userId}" and post_id is not null;`)
+            return await con.query(`SELECT  count(user.user_name) as user from likes inner join user as user on user.id = likes.user_id  where user.id = "${newLike.userId}" and post_id is not null;`)
         }
         else if (newLike.type === "comment") {
-            return await con.query(`SELECT  count(user.user_name) from likes inner join user as user on user.id = likes.user_id  where user.id = "${newLike.userId}" and comment_id is not null;`)
+            return await con.query(`SELECT  count(user.user_name) as user from likes inner join user as user on user.id = likes.user_id  where user.id = "${newLike.userId}" and comment_id is not null;`)
         } else {
             console.log("error occured while deleting the data ")
         }

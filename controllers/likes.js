@@ -46,7 +46,7 @@ async function like(req, res) {
                     status: 200,
                     success: true
                 };
-                res.status(500).send(data)
+                res.status(200).send(data)
             }
         }
         console.log("UserCheck")
@@ -143,6 +143,7 @@ async function likedList(req, res) {
             const result = await likeModel.likedList(newLike)
             let finalResult = [];
             for (let i = 0; i < count[0][0].post; i++) {
+                console.log(result[0][i].user_name)
                 finalResult.push(result[0][i].user_name)
             }
             console.log(finalResult)
@@ -180,7 +181,8 @@ async function userLiked(req, res) {
                 userId
             }
             const result = await likeModel.userLiked(newLike)
-            console.log(result)
+            const finalResult = result[0][0].user
+            console.log(finalResult)
             const data = {
                 message: result,
                 status: 200,

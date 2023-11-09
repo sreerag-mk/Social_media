@@ -1,9 +1,16 @@
 const serviceModel = require('../models/sevices');
+const { report } = require('../routes/auth');
 
 
 async function getFeed(req, res) {
     try {
-        const result = await serviceModel.getFeedUser();
+        const page = parseInt(req.body.page)
+        const size = parseInt(req.body.size)
+        console.log("the page and size are")
+        console.log(page)
+        console.log(size)
+        const offset = (page - 1) * size
+        const result = await serviceModel.getFeedUser(size, offset);
         if (result[0].length == 0) {
             const data = {
                 message: 'Login failed',
@@ -110,8 +117,34 @@ async function blocked(req, res) {
 
 }
 
+async function reports(req, res) {
+    const userId = req.user.id;
+    console.log("entering the controller 1 ")
+    const { reportedUserId, reason } = req.body;
+    if (userId != "" || reportedUserId != "") {
+        console.log("entering the controller 1 ")
+        await serviceModel.reportUser(userId, reportedUserId, reason)
+        console.log("entering the controller 1 ")
+        const data = {
+            message: 'User reported',
+            status: 200,
+            success: true
+        };
+        res.status(500).send(data)
+    }
+    else {
+        const data = {
+            message: 'please enter the values',
+            status: 500,
+            success: false
+        };
+        res.status(500).send(data)
+    }
+}
+
 module.exports = {
     getFeed,
     search,
     blocked,
+    reports,
 };

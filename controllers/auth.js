@@ -63,12 +63,8 @@ async function login(req, res) {
             };
             res.status(500).send(data);
         }
-        console.log(testUsername);
-        console.log(testPassword);
         const result = await authModel.queryUser(testUsername, testPassword);
-        console.log(result[0])
         const results = result[0]
-        console.log(results)
 
         if (result[0].length == 0) {
             const data = {

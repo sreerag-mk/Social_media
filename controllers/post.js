@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 const postModel = require('../models/post');
 const fs = require('fs');
 
@@ -105,7 +106,7 @@ async function deletePost(req, res) {
             status: 200,
             success: true
         };
-        res.status(500).send(data)
+        res.status(200).send(data)
     }
     catch (error) {
         const data = {
@@ -117,10 +118,43 @@ async function deletePost(req, res) {
     }
 }
 
+
+
+async function savedpost(req, res) {
+    const userId = await req.user.id;
+    console.log(userId)
+    console.log("entering the controller 1  the saved postid is ")
+    const { savedposts } = req.body
+    console.log(savedposts)
+    if (savedpost != "") {
+        console.log("entering the controller 1 ")
+        await postModel.savedpost(userId, savedposts)
+        console.log("entering the controller 1 ")
+        const data = {
+            message: 'post saved',
+            status: 200,
+            success: true
+        };
+        res.status(500).send(data)
+    }
+    else {
+        const data = {
+            message: 'please enter the values',
+            status: 500,
+            success: false
+        };
+        res.status(500).send(data)
+    }
+}
+
+
+
+
 module.exports = {
     makePost,
     deletePost,
-    uploadImage
+    uploadImage,
+    savedpost,
 };
 
 

@@ -30,7 +30,6 @@ async function createPostUrl(newPost) {
                 newPost.content_type
             ]
         );
-        // const insertedId = await result[1][0].newId;
         const insertedId = result[0].insertId;
         console.log(insertedId)
         console.log("-------------------------------------------------------------------------------------------------------")
@@ -85,8 +84,28 @@ async function uploadImage(image, content_type, caption, content, status, userId
     }
 }
 
+
+
+
+
+async function savedpost(userId, savedpost) {
+    try {
+        console.log("entering the module ")
+        const con = await connection.databaseConnection();
+        await con.query(`insert into saved_post(user_id, post_id) values(${userId}, ${savedpost});`)
+    }
+    catch (error) {
+        console.log(error)
+    }
+}
+
+
+
+
+
 module.exports = {
     createPostUrl,
     deletePost,
     uploadImage,
+    savedpost,
 };
