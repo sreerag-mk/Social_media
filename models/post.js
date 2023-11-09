@@ -9,11 +9,8 @@ async function deletePost(postId, userId) {
         // postId = parseInt(postId)
 
         if (mediaId) {
-            console.log(mediaId)
             await con.query(`delete from post where id = ${postId}`)
-            console.log(postId)
             await con.query(`delete from post_media where id = ${mediaId}`)
-            console.log("inside delete model")
         }
         else {
             return Error
