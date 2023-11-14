@@ -11,10 +11,11 @@ async function addHashtag(userId, content) {
                 content
             ]
         );
+        return true
 
     }
     catch (error) {
-        return error
+        return false
     }
 }
 
@@ -24,9 +25,10 @@ async function deleteHashtag(userId, tag) {
         await con.query(
             `delete from hashtag where user_id = ${userId} and name = "${tag}"  ;`,
         );
+        return true
     }
     catch (error) {
-        return error
+        return false
     }
 }
 
@@ -40,7 +42,7 @@ async function userCheck(userId, postId) {
         return result[0][0].id
     }
     catch (error) {
-        return error
+        return false
     }
 }
 
@@ -55,9 +57,10 @@ async function deletePost(userId, id) {
         await con.query(
             `delete from hashtag_post where id = ${result[0][0].id};`,
         );
+        return true
     }
     catch (error) {
-        return error
+        return false
     }
 }
 
@@ -72,10 +75,10 @@ async function addPost(postId, hashtagId) {
                 hashtagId
             ]
         );
-
+        return false
     }
     catch (error) {
-        return error
+        return false;
     }
 }
 

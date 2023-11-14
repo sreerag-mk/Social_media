@@ -1,10 +1,8 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const middleWare = require('../middle_ware/authverify')
 const like = require('../controllers/likes');
 
 const app = express();
-app.use(bodyParser.json());
 
 
 app.post('/like', middleWare.verifyToken, like.like);

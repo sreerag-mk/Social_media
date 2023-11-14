@@ -7,11 +7,10 @@ const fs = require('fs');
 async function uploadImage(req, res) {
     const userId = req.user.id;
     try {
-        const image = req.file;
+        const image = req.files;
         const { content_type, caption, content, status } = req.body;
-
         if (content_type == "photo") {
-            await postModel.uploadImage(image.path, content_type, caption, content, status, userId)
+            await postModel.uploadImage(image, content_type, caption, content, status, userId);
             const data = {
                 message: 'Post created!',
                 success: true

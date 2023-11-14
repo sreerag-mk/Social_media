@@ -1,6 +1,10 @@
 const express = require('express');
+const bodyParser = require('body-parser')
+const cros = require('cros')
 const app = express();
 const port = 3000;
+app.use(bodyParser.urlencoded());
+app.use(cros());
 
 const authRoute = require('./routes/auth')
 const serviceRoute = require('./routes/services')
@@ -11,6 +15,7 @@ const postRoute = require('./routes/post')
 const commentRoute = require('./routes/comment')
 const hashTagRoute = require('./routes/hashtag')
 const groupRoute = require('./routes/group');
+
 
 
 app.use('/auth', authRoute)

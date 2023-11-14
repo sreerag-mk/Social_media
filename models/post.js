@@ -1,4 +1,5 @@
 const connection = require('../config/database')
+const { post } = require('../routes/group')
 
 
 async function deletePost(postId, userId) {
@@ -11,13 +12,15 @@ async function deletePost(postId, userId) {
         if (mediaId) {
             await con.query(`delete from post where id = ${postId}`)
             await con.query(`delete from post_media where id = ${mediaId}`)
+            return true
         }
         else {
-            return Error
+            return false
         }
     }
     catch (error) {
-        return Error
+        return false
+
     }
 }
 
@@ -48,7 +51,7 @@ async function createPostUrl(newPost) {
         return insertedId
     }
     catch (error) {
-        return Error
+        return false
     }
 
 }
@@ -56,10 +59,15 @@ async function createPostUrl(newPost) {
 async function uploadImage(image, content_type, caption, content, status, userId) {
     try {
         const con = await connection.databaseConnection()
+        let arrayImages = []
+        image.forEach(element => {
+            arrayImages.push(element.path)
+        });
+        const imagesPath = JSON.stringify(arrayImages);
         const result = await con.query(
-            'insert into  post_media(media_url, content_type) values (?, ?);',
+            `insert into  post_media(media_url, content_type) values (?, ?);`,
             [
-                image,
+                imagesPath,
                 content_type
             ]
         );
@@ -74,9 +82,10 @@ async function uploadImage(image, content_type, caption, content, status, userId
                 status
             ]
         )
+        return true
     }
     catch (error) {
-        return Error
+        return false
     }
 }
 
@@ -86,7 +95,7 @@ async function savedpost(userId, savedpost) {
         await con.query(`insert into saved_post(user_id, post_id) values(${userId}, ${savedpost});`)
     }
     catch (error) {
-        return Error
+        return false
     }
 }
 

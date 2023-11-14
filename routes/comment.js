@@ -1,10 +1,8 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const middleWare = require('../middle_ware/authverify')
 const comment = require('../controllers/comment');
 
 const app = express();
-app.use(bodyParser.json());
 
 
 app.post('/comment', middleWare.verifyToken, comment.comment);

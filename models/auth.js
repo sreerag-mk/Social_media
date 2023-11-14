@@ -19,9 +19,10 @@ async function createUser(newUser) {
             ]
         );
         con.end()
+        return true
     }
     catch (error) {
-        return error
+        return false
 
     }
 }
@@ -38,8 +39,8 @@ async function checkUser(user_name) {
 async function queryUser(username, password) {
     try {
         const con = await connection.databaseConnection()
-        let qr = `select id, user_name from user where user_name='${username}' and password = '${password}'`;
-        const results = con.query(qr)
+        let qr = `select id, user_name from user where user_name= ? and password = ?`;
+        const results = con.query(qr, [username, password])
         con.end()
         return results
     }

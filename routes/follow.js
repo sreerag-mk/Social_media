@@ -1,10 +1,8 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const middleWare = require('../middle_ware/authverify')
 const follow = require('../controllers/follow');
 
 const app = express();
-app.use(bodyParser.json());
 
 app.post('/getotherfollower', middleWare.verifyToken, follow.getOtherFollower);
 app.post('/getotherfollowing', middleWare.verifyToken, follow.getOtherFollowing);

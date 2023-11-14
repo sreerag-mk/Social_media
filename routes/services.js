@@ -1,10 +1,8 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const middleWare = require('../middle_ware/authverify')
 const service = require('../controllers/services');
 
 const app = express();
-app.use(bodyParser.json());
 
 app.post('/search', middleWare.verifyToken, service.search);
 app.post('/blocked', middleWare.verifyToken, service.blocked)

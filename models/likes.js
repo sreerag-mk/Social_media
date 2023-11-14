@@ -16,7 +16,7 @@ async function checkUserLiked(userId, id, type) {
         return results
     }
     else {
-        return Error
+        return false
     }
 }
 
@@ -34,12 +34,12 @@ async function addLike(newLike) {
             )
         }
         else {
-            return Error
+            return false
         }
 
     }
     catch (error) {
-        return error
+        return false
     }
 }
 async function disLike(newLike) {
@@ -60,7 +60,7 @@ async function disLike(newLike) {
         )
     }
     catch (error) {
-        return error
+        return false
     }
 }
 async function likedList(newLike) {
@@ -72,12 +72,12 @@ async function likedList(newLike) {
         else if (newLike.type === "comment") {
             return await con.query(`SELECT  user.user_name from likes inner join user as user on user.id = likes.user_id where comment_id = ${newLike.id};`)
         } else {
-            return Error
+            return false;
         }
 
     }
     catch (error) {
-        return error
+        return false;
     }
 }
 
@@ -90,12 +90,12 @@ async function likeCount(newLike) {
         else if (newLike.type === "comment") {
             return await con.query(`SELECT count(comment_id) as comment from likes inner join user as user on user.id = likes.user_id where comment_id = ${newLike.id};`)
         } else {
-            return Error
+            return false;
         }
 
     }
     catch (error) {
-        return error
+        return false;
     }
 }
 
@@ -108,12 +108,12 @@ async function userLiked(newLike) {
         else if (newLike.type === "comment") {
             return await con.query(`SELECT  count(user.user_name) as user from likes inner join user as user on user.id = likes.user_id  where user.id = "${newLike.userId}" and comment_id is not null;`)
         } else {
-            return Error
+            return false;
         }
 
     }
     catch (error) {
-        return error
+        return false;
     }
 }
 

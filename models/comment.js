@@ -2,11 +2,18 @@ const connection = require('../config/database')
 
 
 async function checkUserComment(userId, id) {
-    const con = await connection.databaseConnection()
-    let qr = `select id from comments where user_id = ${userId} and post_id = ${id};`
-    const results = await con.query(qr)
-    con.end()
-    return results
+
+    try {
+        const con = await connection.databaseConnection()
+        let qr = `select id from comments where user_id = ${userId} and post_id = ${id};`
+        const results = await con.query(qr)
+        con.end()
+        return results
+    }
+    catch (error) {
+        return false
+    }
+
 }
 
 async function addComment(newComment) {
@@ -15,9 +22,10 @@ async function addComment(newComment) {
         await con.query(
             `insert into comments(user_id, post_id, content) values (${newComment.userId}, ${newComment.id}, "${newComment.content}");`
         )
+        return true
     }
     catch (error) {
-        return error
+        return false
     }
 }
 
@@ -27,9 +35,10 @@ async function addReplay(newReplay) {
         await con.query(
             `insert into replays(user_id, comment_id, content) values ("${newReplay.userId}", "${newReplay.id}", "${newReplay.content}")`
         )
+        return true
     }
     catch (error) {
-        return error
+        return false
     }
 }
 
@@ -41,9 +50,10 @@ async function removeComment(newComment) {
         await con.query(
             `delete from comments where id = ${newCommentId} ;`
         )
+        return true
     }
     catch (error) {
-        return error
+        return false
     }
 }
 
@@ -56,9 +66,10 @@ async function removeReplay(newReplay) {
         await con.query(
             `delete from replays where id = ${newReplayId} ;`
         )
+        return true
     }
     catch (error) {
-        return error
+        return false
     }
 }
 
@@ -68,7 +79,7 @@ async function commentCount(newComment) {
         return await con.query(`select count(id) as comments from comments group by post_id having post_id = ${newComment.id} ;`)
     }
     catch (error) {
-        return error
+        return false
     }
 }
 
@@ -78,7 +89,7 @@ async function replayCount(newReplay) {
         return await con.query(`select count(id) as replays from replays group by comment_id having comment_id = ${newReplay.id} ;`)
     }
     catch (error) {
-        return error
+        return false
     }
 }
 
@@ -100,7 +111,7 @@ async function userCommented(userId) {
         return await con.query(`SELECT  count(user.user_name) as user from comments inner join user as user on user.id = comments.user_id  where user.id = "${userId}";`)
     }
     catch (error) {
-        return error
+        return false;
     }
 }
 
