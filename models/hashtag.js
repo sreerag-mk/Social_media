@@ -11,6 +11,7 @@ async function addHashtag(userId, content) {
                 content
             ]
         );
+        con.end()
         return true
 
     }
@@ -25,6 +26,7 @@ async function deleteHashtag(userId, tag) {
         await con.query(
             `delete from hashtag where user_id = ${userId} and name = "${tag}"  ;`,
         );
+        con.end()
         return true
     }
     catch (error) {
@@ -39,6 +41,7 @@ async function userCheck(userId, postId) {
             `select id from post 
             where user_id = ${userId} and id = ${postId} ;`
         )
+        con.end()
         return result[0][0].id
     }
     catch (error) {
@@ -57,6 +60,7 @@ async function deletePost(userId, id) {
         await con.query(
             `delete from hashtag_post where id = ${result[0][0].id};`,
         );
+        con.end()
         return true
     }
     catch (error) {
@@ -75,7 +79,8 @@ async function addPost(postId, hashtagId) {
                 hashtagId
             ]
         );
-        return false
+        con.end()
+        return true
     }
     catch (error) {
         return false;

@@ -27,13 +27,16 @@ async function addLike(newLike) {
             await con.query(
                 `insert into likes(user_id, post_id) values(${newLike.userId}, "${newLike.id}");`
             )
+            con.end()
         }
         else if (newLike.type === "comment") {
             await con.query(
                 `insert into likes(user_id, comment_id) values(${newLike.userId}, "${newLike.id}");`
             )
+            con.end()
         }
         else {
+            con.end()
             return false
         }
 
@@ -48,6 +51,7 @@ async function disLike(newLike) {
         let likeId = 0
         if (newLike.type === "post") {
             likeId = await con.query(`select id from likes where user_id = ${newLike.userId} and post_id = ${newLike.id};`)
+
         }
         else if (newLike.type === "comment") {
             likeId = await con.query(`select id from likes where user_id = ${newLike.userId} and comment_id = ${newLike.id}; `)
@@ -58,6 +62,7 @@ async function disLike(newLike) {
         await con.query(
             `delete from likes where id = ${newLikeId} ;`
         )
+        con.end()
     }
     catch (error) {
         return false
@@ -72,6 +77,7 @@ async function likedList(newLike) {
         else if (newLike.type === "comment") {
             return await con.query(`SELECT  user.user_name from likes inner join user as user on user.id = likes.user_id where comment_id = ${newLike.id};`)
         } else {
+            con.end()
             return false;
         }
 
@@ -90,6 +96,7 @@ async function likeCount(newLike) {
         else if (newLike.type === "comment") {
             return await con.query(`SELECT count(comment_id) as comment from likes inner join user as user on user.id = likes.user_id where comment_id = ${newLike.id};`)
         } else {
+            con.end()
             return false;
         }
 
@@ -108,6 +115,7 @@ async function userLiked(newLike) {
         else if (newLike.type === "comment") {
             return await con.query(`SELECT  count(user.user_name) as user from likes inner join user as user on user.id = likes.user_id  where user.id = "${newLike.userId}" and comment_id is not null;`)
         } else {
+            con.end()
             return false;
         }
 

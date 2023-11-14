@@ -1,5 +1,4 @@
 const connection = require('../config/database')
-const { post } = require('../routes/group')
 
 
 async function deletePost(postId, userId) {
@@ -12,9 +11,11 @@ async function deletePost(postId, userId) {
         if (mediaId) {
             await con.query(`delete from post where id = ${postId}`)
             await con.query(`delete from post_media where id = ${mediaId}`)
+            con.end()
             return true
         }
         else {
+            con.end()
             return false
         }
     }
@@ -82,6 +83,7 @@ async function uploadImage(image, content_type, caption, content, status, userId
                 status
             ]
         )
+        con.end()
         return true
     }
     catch (error) {
@@ -93,6 +95,8 @@ async function savedpost(userId, savedpost) {
     try {
         const con = await connection.databaseConnection();
         await con.query(`insert into saved_post(user_id, post_id) values(${userId}, ${savedpost});`)
+        con.end()
+        return true
     }
     catch (error) {
         return false

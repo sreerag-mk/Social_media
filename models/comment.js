@@ -22,6 +22,7 @@ async function addComment(newComment) {
         await con.query(
             `insert into comments(user_id, post_id, content) values (${newComment.userId}, ${newComment.id}, "${newComment.content}");`
         )
+        con.end()
         return true
     }
     catch (error) {
@@ -35,6 +36,7 @@ async function addReplay(newReplay) {
         await con.query(
             `insert into replays(user_id, comment_id, content) values ("${newReplay.userId}", "${newReplay.id}", "${newReplay.content}")`
         )
+        con.end()
         return true
     }
     catch (error) {
@@ -50,6 +52,7 @@ async function removeComment(newComment) {
         await con.query(
             `delete from comments where id = ${newCommentId} ;`
         )
+        con.end()
         return true
     }
     catch (error) {
@@ -66,6 +69,7 @@ async function removeReplay(newReplay) {
         await con.query(
             `delete from replays where id = ${newReplayId} ;`
         )
+        con.end()
         return true
     }
     catch (error) {

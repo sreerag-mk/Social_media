@@ -45,6 +45,9 @@ async function blockUser(userId, blockedUserId) {
     try {
         const con = await connection.databaseConnection();
         await con.query(`insert into blocked(rid, bid) values(${userId}, ${blockedUserId})`)
+        con.end()
+        return true
+
     }
     catch (error) {
         return false
@@ -54,6 +57,8 @@ async function unblock(userId, blockedUserId) {
     try {
         const con = await connection.databaseConnection();
         await con.query(`delete from blocked where rid = ${userId} and bid = ${blockedUserId}`)
+        con.end()
+        return true
     }
     catch (error) {
         return false
@@ -64,6 +69,8 @@ async function reportUser(userId, reportedUserId, reason) {
     try {
         const con = await connection.databaseConnection();
         await con.query(`insert into report(reporter_user_id, reported_user_id, reason) values(${userId}, ${reportedUserId}, '${reason}')`)
+        con.end()
+        return true
     }
     catch (error) {
         return false

@@ -6,6 +6,7 @@ async function addingBio(userId, newBio) {
         await con.query(
             `update user set bio = "${newBio}" where id = ${userId};`
         )
+        con.end()
         return true
 
     }
@@ -20,6 +21,7 @@ async function editingBio(userId, newBio) {
         await con.query(
             `update user set bio = "${newBio}" where id = ${userId};`
         )
+        con.end()
         return true
     }
     catch (error) {
