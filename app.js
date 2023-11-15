@@ -1,11 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser')
-const cros = require('cros')
+const cors = require('cors')
 const app = express();
 const port = 3000;
 app.use(bodyParser.urlencoded());
-app.use(cros());
+app.use(cors());
 
+const adminRoute = require('./admin/router');
 const authRoute = require('./routes/auth')
 const serviceRoute = require('./routes/services')
 const bioRoute = require('./routes/bio')
@@ -18,6 +19,7 @@ const groupRoute = require('./routes/group');
 
 
 
+app.use('/admin', adminRoute)
 app.use('/auth', authRoute)
 app.use('/service', serviceRoute)
 app.use('/bio', bioRoute)

@@ -8,7 +8,7 @@ async function getFeed(req, res) {
         const result = await serviceModel.getFeedUser(size, offset);
         if (result[0].length == 0) {
             const data = {
-                message: 'Login failed',
+                message: 'error ar getting feed',
                 success: false
             };
             res.status(500).send(data);
@@ -22,7 +22,7 @@ async function getFeed(req, res) {
     }
     catch (error) {
         const data = {
-            message: 'Login failed',
+            message: 'error at getting feed',
             success: false
         };
         res.status(500).send(data)
@@ -65,26 +65,51 @@ async function search(req, res) {
 }
 
 async function blocked(req, res) {
-    const userId = req.user.id;
-    const { blockedUserId } = req.body;
-    const blockCheck = await serviceModel.checkUserBlocked(userId, blockedUserId)
-    if (blockCheck[0].length === 0) {
-        if (userId != "" || blockedUserId != "") {
-            await serviceModel.blockUser(userId, blockedUserId)
-            const data = {
-                message: 'User blocked',
-                success: true
-            };
-            res.status(500).send(data)
+    try {
+        const userId = req.user.id;
+        const { blockedUserId } = req.body;
+        const blockCheck = await serviceModel.checkUserBlocked(userId, blockedUserId)
+        if (blockCheck[0].length === 0) {
+            if (userId != "" || blockedUserId != "") {
+                await serviceModel.blockUser(userId, blockedUserId)
+                const data = {
+                    message: 'User blocked',
+                    success: true
+                };
+                res.status(500).send(data)
+            }
+            else {
+                const data = {
+                    message: 'please enter the values',
+                    success: false
+                };
+                res.status(500).send(data)
+            }
+        } else {
+            if (userId != "" || blockedUserId != "") {
+                await serviceModel.unblock(userId, blockedUserId)
+                const data = {
+                    message: 'user has been unblocked',
+                    success: true
+                };
+                res.status(500).send(data)
+            }
         }
-        else {
-            const data = {
-                message: 'please enter the values',
-                success: false
-            };
-            res.status(500).send(data)
-        }
-    } else {
+    }
+    catch (error) {
+        const data = {
+            message: "ERROR",
+            success: false
+        };
+        res.status(500).send(data);
+    }
+
+}
+
+async function unblock(req, res) {
+    try {
+        const userId = req.user.id;
+        const { blockedUserId } = req.body;
         if (userId != "" || blockedUserId != "") {
             await serviceModel.unblock(userId, blockedUserId)
             const data = {
@@ -94,7 +119,13 @@ async function blocked(req, res) {
             res.status(500).send(data)
         }
     }
-
+    catch (error) {
+        const data = {
+            message: "ERROR",
+            success: false
+        };
+        res.status(500).send(data);
+    }
 }
 
 async function reports(req, res) {
@@ -122,4 +153,5 @@ module.exports = {
     search,
     blocked,
     reports,
+    unblock
 };
