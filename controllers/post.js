@@ -124,6 +124,26 @@ async function savedpost(req, res) {
 }
 
 
+async function removesavedpost(req, res) {
+    const userId = req.user.id;
+    const { post } = req.body
+    if (savedpost != "") {
+        await postModel.removesavedpost(userId, post)
+        const data = {
+            message: 'removed post from  saved list',
+            success: true
+        };
+        res.status(200).send(data)
+    }
+    else {
+        const data = {
+            message: 'please enter the values',
+            status: 500,
+            success: false
+        };
+        res.status(500).send(data)
+    }
+}
 
 
 module.exports = {
@@ -131,11 +151,6 @@ module.exports = {
     deletePost,
     uploadImage,
     savedpost,
+    removesavedpost,
 };
-
-
-
-
-
-
 

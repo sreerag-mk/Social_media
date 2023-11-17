@@ -23,7 +23,6 @@ async function createUser(newUser) {
     }
     catch (error) {
         return false
-
     }
 }
 
@@ -49,8 +48,22 @@ async function queryUser(username, password) {
     }
 }
 
+async function deleteUser(userId, password) {
+    try {
+        const con = await connection.databaseConnection();
+        let qr = 'UPDATE User SET deleted = true WHERE id = ? and password = ?;'
+        const result = con.query(qr, [userId, password])
+        con.end()
+        return true
+    }
+    catch (error) {
+        return false
+    }
+}
+
 module.exports = {
     createUser,
     queryUser,
     checkUser,
+    deleteUser,
 }

@@ -103,9 +103,24 @@ async function savedpost(userId, savedpost) {
     }
 }
 
+async function removesavedpost(userId, savedpost) {
+    try {
+        const con = await connection.databaseConnection();
+
+        const qr = `delete from saved_post where user_id = ? and post_id = ?`;
+        await con.query(qr, [userId, savedpost])
+        con.end()
+        return true
+    }
+    catch (error) {
+        return false
+    }
+}
+
 module.exports = {
     createPostUrl,
     deletePost,
     uploadImage,
     savedpost,
+    removesavedpost,
 };

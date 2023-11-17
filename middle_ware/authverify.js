@@ -10,11 +10,8 @@ function verifyToken(req, res, next) {
         if (err) {
             res.status(500).send({ error: 'Authentication failed' });
         } else {
-            console.log("decoded value is")
-            console.log(decoded)
             req.user = decoded
             next();
-
         }
     }
     )
