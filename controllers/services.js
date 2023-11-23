@@ -85,17 +85,23 @@ async function blocked(req, res) {
                 };
                 res.status(500).send(data)
             }
-        } else {
-            if (userId != "" || blockedUserId != "") {
-                await serviceModel.unblock(userId, blockedUserId)
-                const data = {
-                    message: 'user has been unblocked',
-                    success: true
-                };
-                res.status(500).send(data)
-            }
+        } else if (userId != "" || blockedUserId != "") {
+            await serviceModel.unblock(userId, blockedUserId)
+            const data = {
+                message: 'user has been unblocked',
+                success: true
+            };
+            res.status(500).send(data)
+        }
+        else {
+            const data = {
+                message: 'please enter some data',
+                success: false
+            };
+            res.status(500).send(data)
         }
     }
+
     catch (error) {
         const data = {
             message: "ERROR",

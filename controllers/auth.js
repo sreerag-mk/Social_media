@@ -4,6 +4,10 @@ const authModel = require('../models/auth');
 const middleWare = require('../middle_ware/authverify')
 const jwt = middleWare.jwt;
 
+
+require('dotenv').config();
+const userToken = process.env.userToken;
+
 async function signup(req, res) {
     try {
         const { first_name, last_name, user_name, password, phone_number, address, dob, gender } = req.body;
@@ -123,7 +127,7 @@ async function login(req, res) {
                     id: await results[0].id,
                     user_name: await results[0].user_name
                 };
-                let token = jwt.sign(resp, "asdfghjkl1234567890qwertyuiop1234567890-qwertyuiopasdfghjklzxcvbnm,asdfghjklwertyuio234567890-qwertyuiopasdfghjkla3w4sex5dcr6tv7byuhnim2aes4dr5tf6g7y8hu9jik3w4xe5rctf6yubhjim", { expiresIn: 86000000000000 });
+                let token = jwt.sign(resp, userToken, { expiresIn: 86000000000000 });
                 const data = {
                     message: 'Login is completed',
                     token: token,

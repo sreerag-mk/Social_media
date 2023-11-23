@@ -77,8 +77,6 @@ async function reportUser(userId, reportedUserId, reason) {
     }
 }
 
-
-
 module.exports = {
     getFeedUser,
     getSearch,

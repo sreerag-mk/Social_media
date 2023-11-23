@@ -28,24 +28,29 @@ async function like(req, res) {
                 res.status(200).send(data)
             }
         }
-        else {
-            if (type != "" || id != "") {
-                const newLike = {
-                    userId,
-                    type,
-                    id
-                }
-                await likeModel.disLike(newLike)
-                const data = {
-                    message: 'Like has been removed',
-                    success: true
-                };
-                res.status(200).send(data)
+        else if (type != "" || id != "") {
+            const newLike = {
+                userId,
+                type,
+                id
             }
+            await likeModel.disLike(newLike)
+            const data = {
+                message: 'Like has been removed',
+                success: true
+            };
+            res.status(200).send(data)
+        } else {
+            const data = {
+                message: 'please enter some data',
+                success: false
+            };
+            res.status(500).send(data)
         }
-
-
     }
+
+
+
     catch {
         const data = {
             message: 'Error occured',

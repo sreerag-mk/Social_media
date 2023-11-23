@@ -3,7 +3,8 @@ const middleWare = require('../middle_ware/authverify')
 const comment = require('../controllers/comment');
 
 const app = express();
-
+const helmet = require("helmet")
+app.use(helmet())
 
 app.post('/comment', middleWare.verifyToken, comment.comment);
 app.post('/replay', middleWare.verifyToken, comment.replay);

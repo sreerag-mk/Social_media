@@ -47,7 +47,7 @@ async function replay(req, res) {
     try {
         const userId = req.user.id;
         const { id, content } = req.body;
-        if (id != "") {
+        if (id != "" || content != "") {
             const newReplay = {
                 userId,
                 content,

@@ -72,10 +72,10 @@ async function likedList(newLike) {
     try {
         const con = await connection.databaseConnection();
         if (newLike.type === "post") {
-            return await con.query(`SELECT  user.user_name from likes inner join user as user on user.id = likes.user_id where post_id = ${newLike.id}; `)
+            return await con.query(`SELECT  user.user_name from user as user inner join likes as likes on user.id = likes.user_id where post_id = ${newLike.id}; `)
         }
         else if (newLike.type === "comment") {
-            return await con.query(`SELECT  user.user_name from likes inner join user as user on user.id = likes.user_id where comment_id = ${newLike.id};`)
+            return await con.query(`SELECT  user.user_name from user as user inner join likes as likes on user.id = likes.user_id where comment_id = ${newLike.id};`)
         } else {
             con.end()
             return false;
@@ -91,10 +91,10 @@ async function likeCount(newLike) {
     try {
         const con = await connection.databaseConnection();
         if (newLike.type === "post") {
-            return await con.query(`SELECT count(post_id) as post from likes inner join user as user on user.id = likes.user_id where post_id = ${newLike.id};`)
+            return await con.query(`SELECT count(post_id) as post from user as user inner join likes as likes on user.id = likes.user_id where post_id = ${newLike.id};`)
         }
         else if (newLike.type === "comment") {
-            return await con.query(`SELECT count(comment_id) as comment from likes inner join user as user on user.id = likes.user_id where comment_id = ${newLike.id};`)
+            return await con.query(`SELECT count(comment_id) as comment from user as user inner join likes as likes on user.id = likes.user_id where comment_id =${newLike.id};`)
         } else {
             con.end()
             return false;
@@ -110,10 +110,10 @@ async function userLiked(newLike) {
     try {
         const con = await connection.databaseConnection();
         if (newLike.type === "post") {
-            return await con.query(`SELECT  count(user.user_name) as user from likes inner join user as user on user.id = likes.user_id  where user.id = "${newLike.userId}" and post_id is not null;`)
+            return await con.query(`SELECT count(user.user_name) as user from user as user inner join likes as likes on user.id = likes.user_id  where user.id = ${newLike.userId} and post_id is not null;`)
         }
         else if (newLike.type === "comment") {
-            return await con.query(`SELECT  count(user.user_name) as user from likes inner join user as user on user.id = likes.user_id  where user.id = "${newLike.userId}" and comment_id is not null;`)
+            return await con.query(`SELECT count(user.user_name) as user from user as user inner join likes as likes on user.id = likes.user_id  where user.id = ${newLike.userId} and comment_id is not null;`)
         } else {
             con.end()
             return false;

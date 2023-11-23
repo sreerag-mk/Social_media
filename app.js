@@ -1,13 +1,17 @@
 const express = require('express');
 const bodyParser = require('body-parser')
-const cors = require('cors')
 const app = express();
+const helmet = require("helmet")
+app.use(helmet())
 const port = 3000;
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
-app.use(cors());
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:3000/');
+    next();
+});
 
-const adminRoute = require('./admin/router');
+const adminRoute = require('./admin/router/router');
 const authRoute = require('./routes/auth')
 const serviceRoute = require('./routes/services')
 const bioRoute = require('./routes/bio')
