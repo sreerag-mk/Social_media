@@ -46,12 +46,24 @@ async function deletePost(req, res) {
     try {
         const userId = req.user.id;
         const { id } = req.body;
-        await hashtagModel.deletePost(userId, id);
-        const data = {
-            message: 'Deleted succesfully',
-            success: true
-        };
-        res.status(200).send(data)
+        console.log('this is the 3 st')
+        const result = await hashtagModel.deletePost(userId, id);
+        console.log('this is the 2 st')
+        console.log(result[0])
+        if (result[0] == []) {
+            const data = {
+                message: 'No mathch found',
+                success: true
+            };
+            res.status(200).send(data)
+        }
+        else {
+            const data = {
+                message: 'Deleted succesfully',
+                success: true
+            };
+            res.status(200).send(data)
+        }
     }
     catch (error) {
         const data = {

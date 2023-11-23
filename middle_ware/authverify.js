@@ -1,12 +1,35 @@
 const jwt = require('jsonwebtoken');
 
+require('dotenv').config();
+
+const userToken = process.env.userToken;
+
+const adminToken = process.env.adminToken;
+
 function verifyToken(req, res, next) {
     let authHeader = req.headers.authorization;
     if (authHeader == undefined) {
         res.status(401).send({ error: 'No token provided' });
     }
     let token = authHeader.split(" ")[1];
-    jwt.verify(token, "asdfghjkl1234567890qwertyuiop1234567890-qwertyuiopasdfghjklzxcvbnm,asdfghjklwertyuio234567890-qwertyuiopasdfghjkla3w4sex5dcr6tv7byuhnim2aes4dr5tf6g7y8hu9jik3w4xe5rctf6yubhjim", function (err, decoded) {
+    jwt.verify(token, userToken, function (err, decoded) {
+        if (err) {
+            res.status(500).send({ error: 'Authentication failed' });
+        } else {
+            req.user = decoded
+            next();
+        }
+    }
+    )
+}
+
+function verifyAdmin(req, res, next) {
+    let authHeader = req.headers.authorization;
+    if (authHeader == undefined) {
+        res.status(401).send({ error: 'No token provided' });
+    }
+    let token = authHeader.split(" ")[1];
+    jwt.verify(token, adminToken, function (err, decoded) {
         if (err) {
             res.status(500).send({ error: 'Authentication failed' });
         } else {
@@ -19,5 +42,6 @@ function verifyToken(req, res, next) {
 
 module.exports = {
     verifyToken,
+    verifyAdmin,
     jwt,
 }

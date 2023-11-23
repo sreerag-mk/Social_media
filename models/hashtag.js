@@ -53,15 +53,15 @@ async function deletePost(userId, id) {
     try {
         const con = await connection.databaseConnection();
         const result = await con.query(
-            `select hashtag_post.id from hashtag_post
-            inner join post on post.id = hashtag_post.post_id
-             where hashtag_post.id = ${id} and post.user_id = ${userId};`
+            `select hashtag_post.id from post left join hashtag_post on post.id = hashtag_post.post_id
+            where hashtag_post.id = ${id} and post.user_id = "${userId}";`
         )
         await con.query(
             `delete from hashtag_post where id = ${result[0][0].id};`,
         );
+
         con.end()
-        return true
+        return result
     }
     catch (error) {
         return false

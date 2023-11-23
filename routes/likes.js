@@ -4,7 +4,8 @@ const like = require('../controllers/likes');
 
 const app = express();
 
-
+const helmet = require("helmet")
+app.use(helmet())
 app.post('/like', middleWare.verifyToken, like.like);
 app.delete('/dislike', middleWare.verifyToken, like.disLike);
 app.get('/likelist', middleWare.verifyToken, like.likedList);

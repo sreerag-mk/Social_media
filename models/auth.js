@@ -52,7 +52,7 @@ async function deleteUser(userId, password) {
     try {
         const con = await connection.databaseConnection();
         let qr = 'UPDATE User SET deleted = true WHERE id = ? and password = ?;'
-        const result = con.query(qr, [userId, password])
+        con.query(qr, [userId, password])
         con.end()
         return true
     }
